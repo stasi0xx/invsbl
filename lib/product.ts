@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
             "Acid Wash Finish",
             "Made in Poland"
         ],
-        image: "/placeholder-hoodie.jpg", // Wrzuć cokolwiek do folderu /public
+        image: "/CONCRETE HOODIE.webp", // Wrzuć cokolwiek do folderu /public
     },
     {
         id: "prod_002",

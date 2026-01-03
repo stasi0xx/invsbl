@@ -9,17 +9,16 @@ export function Hero() {
             {/* 1. OBRAZ TŁA */}
             <div className="absolute inset-0 w-full h-full">
                 <Image
-                    src="/hero-bg.webp" // Upewnij się, że plik jest w folderze /public
+                    src="/hero-bg.webp"
                     alt="INVSBL Streetwear Collection"
-                    fill // To sprawia, że obraz wypełnia kontener
-                    priority // Ładujemy to jako priorytet (LCP), bo to pierwsza rzecz jaką widzi user
-                    className="object-cover object-center opacity-90" // object-cover przycina nadmiar, object-center centruje modeli
+                    fill
+                    priority
+                    className="object-cover object-center opacity-90"
                     quality={95}
                 />
             </div>
 
             {/* 2. OVERLAY (Gradient) */}
-            {/* Ciemny gradient od dołu, żeby biały tekst był czytelny i łączył się ze stroną */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/60 to-transparent z-10" />
 
             {/* Opcjonalnie: Delikatny noise/ziarno dla klimatu industrialnego */}
@@ -28,7 +27,8 @@ export function Hero() {
             </div>
 
             {/* 3. TREŚĆ NA ŚRODKU */}
-            <div className="relative z-20 h-full flex flex-col items-center justify-end pb-32 md:justify-center md:pb-0 px-4 text-center">
+            {/* ZMIANA TUTAJ: Zmieniono pb-32 na pb-48. Tekst idzie w górę. */}
+            <div className="relative z-20 h-full flex flex-col items-center justify-end pb-48 md:justify-center md:pb-0 px-4 text-center">
 
                 {/* Badge / Tagline */}
                 <span className="inline-block py-1 px-3 border border-white/20 rounded-full bg-black/30 backdrop-blur-md text-[10px] font-mono text-acid tracking-widest mb-6 animate-fade-in-up">
