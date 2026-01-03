@@ -43,12 +43,12 @@ export function InPostMap({ onSelect }: InPostMapProps) {
             W trybie bez tokenu mapa może działać w trybie "demo" lub wymagać sandboxa.
             Jeśli masz token z Managera Paczek, wpisz go w token="TWÓJ_TOKEN"
         */}
-                {/*<inpost-geowidget
-                    token={'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIwODI3OTY0MTAsImlhdCI6MTc2NzQzNjQxMCwianRpIjoiZjkxODQ3MjgtYjA1Ny00YjU4LWIwYWEtNDM5NTRlOTI1NTVmIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpMVUgyRWlSREtWRWVKSlRBTmlGZlRELWFyLVVEd0VVdU91THhycmhNbWdjIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiNzc2ZTU5OTgtZDMwNy00MjJmLWI3YmItNmZiZjYyMDRlMzY0Iiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6Ijc3NmU1OTk4LWQzMDctNDIyZi1iN2JiLTZmYmY2MjA0ZTM2NCIsImFsbG93ZWRfcmVmZXJyZXJzIjoiaW52c2JsLnBsIiwidXVpZCI6IjIwMjY0YWNjLTY3YzItNGFlNy04NmVkLTI3NmNlMjVkNWE1NiJ9.N15FnHn4qMlFFIAS27qV2h1FbsR0iXaUby1c4H1EUWwPGmzXhTAiNf72AdQ5lKKaQJlen0TqczLgqdsyVKIMIzSnm_-uCOYNYTTAJEayy-RANmr6WR__9jipKq3hKCLPGdGOZ-z-Bn4nZpo-aqm4hC3TnmQ0lBN_L4xPi3dQyYc0deP-AeeSUwxLnlIGOwenHNkXszH31u83GLZlrE6TYb8ZhSN8AFrqBiNKtmyhjlT1zTUMR-w75MdJPRE5GGeFYjw3lZ6qg8aX90jv2CROI5f2shbs3jbGPAmig9ppQp4toQu-jQPdQTQgjtrH5xhFepbpQOjS6TTq9jh6nUCFTQ'}
+                <inpost-geowidget
+                    token={'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIwODI3OTY5MzYsImlhdCI6MTc2NzQzNjkzNiwianRpIjoiMjBkMzAzNzUtNjMxYy00OWM4LWJhNDktM2ZhYzdkMTk3ZjEyIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpMVUgyRWlSREtWRWVKSlRBTmlGZlRELWFyLVVEd0VVdU91THhycmhNbWdjIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiNmQ4ODM2ZmMtOTQ2Ny00NjMwLThmYzctZjNmMWMwYTNhYWYwIiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjZkODgzNmZjLTk0NjctNDYzMC04ZmM3LWYzZjFjMGEzYWFmMCIsImFsbG93ZWRfcmVmZXJyZXJzIjoiaW52c2JsLnZlcmNlbC5hcHAiLCJ1dWlkIjoiMjAyNjRhY2MtNjdjMi00YWU3LTg2ZWQtMjc2Y2UyNWQ1YTU2In0.n4PKHnRwUIPiKwaWFvbTOhLoTxpSYD98GIrCMqUHagWa88LRjwpfBcYdgLrcT7aG0H3NJhlCO6jj1juxzwhKAjsY6XKj_legKPMnC1JOE3jmk8jLdyUJ1VXTNny4ckzt1Zwi6fhdAitE7UVs2S5mhiiSKbni6qH4lhW5megcYp9k17RSqyRh6D3dau_rrS59YRBJ4dZRTzGaXD93sf0rHjaVlUB4263biF_ljnOttNIosVzruRylbvQJPr7v_ZY0i6KzTRj37bIn0N9JxHzFU-_Fu6JYqfX2Tj3K8mOVR1ZXaVQznOq55q6K3IeKFh3K764D8ZVLW1RaolZnlEmzuw'}
                     onpoint="onPointSelect"
                     config="parcelCollect"
                     language="pl"
-                />*/}
+                />
             </div>
 
             {!isReady && (
