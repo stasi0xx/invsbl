@@ -1,89 +1,82 @@
 "use server";
 
 import { stripe } from "@/lib/stripe";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getProductBySlug } from "@/lib/product";
 
 export async function createCheckoutSession(formData: FormData) {
-    const slug = formData.get("slug") as string;
-    const deliveryMethod = formData.get("deliveryMethod") as string; // 'courier' | 'inpost'
-    const paczkomatCode = formData.get("paczkomatCode") as string;
+    const origin = (await headers()).get("origin") || "http://localhost:3000";
 
-    const product = getProductBySlug(slug);
-    if (!product) throw new Error("Product not found");
+    // Sprawdzamy, czy to checkout z koszyka (wiele produktów)
+    const cartDataString = formData.get("cartData") as string;
+    const isMultiItem = formData.get("isMultiItem") === "true";
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://invsbl.vercel.app";
+    let lineItems = [];
+    let metadata = {};
 
-    // DEFINIUJEMY KOSZTY WYSYŁKI DYNAMICZNIE
-    let shippingRateData;
+    if (isMultiItem && cartDataString) {
+        // --- LOGIKA DLA KOSZYKA (WIELE PRODUKTÓW) ---
+        const cartItems = JSON.parse(cartDataString);
 
-    if (deliveryMethod === "inpost") {
-        // Jeśli Paczkomat - sztywna cena, nazwa zawiera kod punktu
-        shippingRateData = {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1299, currency: "pln" }, // 12.99 PLN
-            display_name: `Paczkomat InPost (${paczkomatCode})`,
+        lineItems = cartItems.map((item: any) => ({
+            price_data: {
+                currency: item.currency,
+                product_data: {
+                    name: item.name,
+                },
+                unit_amount: item.price,
+            },
+            quantity: item.quantity,
+        }));
+
+        // W przypadku wielu produktów, w metadanych zapiszemy ogólne info
+        // lub możemy zapisać JSON string ID produktów (uwaga na limit znaków w Stripe Metadata!)
+        metadata = {
+            type: "cart_checkout",
+            items_count: cartItems.length,
+            // Możemy dodać product_slugs po przecinku dla analityki
+            product_slugs: cartItems.map((i: any) => i.productSlug).join(","),
+            delivery_method: formData.get("deliveryMethod") || "courier",
         };
+
     } else {
-        // Jeśli Kurier
-        shippingRateData = {
-            type: "fixed_amount",
-            fixed_amount: { amount: 1599, currency: "pln" }, // 15.99 PLN
-            display_name: "Kurier DPD",
+        // --- LOGIKA DLA POJEDYNCZEGO PRODUKTU (STARA) ---
+        const productSlug = formData.get("productSlug") as string;
+        const priceAmount = parseFloat(formData.get("priceAmount") as string);
+        const priceCurrency = formData.get("priceCurrency") as string;
+        const productName = formData.get("productName") as string;
+        const deliveryMethod = formData.get("deliveryMethod") as string;
+        const paczkomatCode = formData.get("paczkomatCode") as string;
+
+        lineItems = [{
+            price_data: {
+                currency: priceCurrency,
+                product_data: { name: productName },
+                unit_amount: priceAmount,
+            },
+            quantity: 1,
+        }];
+
+        metadata = {
+            product_slug: productSlug,
+            delivery_method: deliveryMethod,
+            paczkomat_code: paczkomatCode || "",
         };
     }
 
+    // Tworzymy sesję
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card", "blik", "p24"],
-
-        // ZAWSZE zbieramy adres rozliczeniowy (billing).
-        // Przy kurierze służy też jako dostawa.
-        shipping_address_collection: {
-            allowed_countries: ["PL"],
-        },
-
-        phone_number_collection: { enabled: true },
-
-        // DYNAMICZNA OPCJA WYSYŁKI
-        shipping_options: [
-            {
-                shipping_rate_data: {
-                    ...shippingRateData,
-                    delivery_estimate: {
-                        minimum: { unit: "business_day", value: 2 },
-                        maximum: { unit: "business_day", value: 3 },
-                    },
-                } as any, // rzutowanie by TypeScript nie marudził
-            }
-        ],
-
-        line_items: [
-            {
-                price_data: {
-                    currency: product.currency,
-                    product_data: {
-                        name: product.name,
-                        images: [`${baseUrl}${product.image}`],
-                        description: product.description,
-                    },
-                    unit_amount: product.price,
-                },
-                quantity: 1,
-            },
-        ],
-
-        // KLUCZOWE: Zapisujemy kod paczkomatu w metadanych sesji
-        metadata: {
-            product_slug: product.slug,
-            delivery_method: deliveryMethod,
-            paczkomat_code: paczkomatCode || "", // To pójdzie do bazy w webhooku
-        },
-
+        payment_method_types: ["card", "blik"],
+        line_items: lineItems,
         mode: "payment",
-        success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/product/${product.slug}`,
+        success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/`,
+        metadata: metadata,
+        phone_number_collection: { enabled: true },
+        shipping_address_collection: { allowed_countries: ["PL"] },
     });
 
-    if (!session.url) throw new Error("Failed to create session");
-    redirect(session.url);
+    if (session.url) {
+        redirect(session.url);
+    }
 }

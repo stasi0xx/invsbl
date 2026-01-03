@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Unbounded } from "next/font/google"; // Import Unbounded
+import { Unbounded, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/Header"; // <--- Importujemy Header
+import { CartProvider } from "@/context/CartContext"; // <--- NOWE
+import { CartDrawer } from "@/components/CartDrawer";
 
-// 1. Konfiguracja Geist (Body)
+const unbounded = Unbounded({
+    variable: "--font-unbounded",
+    subsets: ["latin"],
+});
+
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -13,16 +20,9 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
-// 2. Konfiguracja Unbounded (Nagłówki - Streetwear vibe)
-const unbounded = Unbounded({
-    variable: "--font-unbounded", // To mapujemy w CSS jako --font-display
-    subsets: ["latin"],
-    weight: ["400", "700", "900"], // Tylko potrzebne wagi
-});
-
 export const metadata: Metadata = {
-    title: "STREETWEAR_BRAND™",
-    description: "Limited Drop 001",
+    title: "INVSBL | Streetwear from Future",
+    description: "Concrete. Acid. Visibility.",
 };
 
 export default function RootLayout({
@@ -31,17 +31,19 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-        <head>
-            <link rel="stylesheet" href="https://geowidget.inpost.pl/inpost-geowidget.css" />
-        </head>
+        <html lang="pl">
         <body
-            className={`${geistSans.variable} ${geistMono.variable} ${unbounded.variable} antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} ${unbounded.variable} antialiased bg-[#09090b] text-[#f4f4f5]`}
         >
-        <main className="min-h-screen flex flex-col">
-            {/* Tutaj w przyszłości wstrzykniemy Navbar */}
-            {children}
-        </main>
+        <CartProvider>
+            <Header />
+            <CartDrawer /> {/* <--- KOSZYK JEST ZAWSZE W STRUKTURZE */}
+
+            <main className="pt-[100px]">
+                {children}
+            </main>
+        </CartProvider>
+
         </body>
         </html>
     );

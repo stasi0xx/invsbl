@@ -1,8 +1,10 @@
+
 import { notFound } from "next/navigation";
 import { PRODUCTS, getProductBySlug } from "@/lib/product";
 import Link from "next/link";
 import {BuyButton} from "@/components/BuyButton";
 import {CheckoutForm} from "@/components/CheckoutForm";
+import { ProductActions } from "@/components/ProductActions";
 
 // 1. To sprawia, że strony są statyczne (Ultra Fast)
 export function generateStaticParams() {
@@ -19,6 +21,7 @@ export default async function ProductPage({
     const { slug } = await params;
     const product = getProductBySlug(slug);
 
+
     if (!product) {
         notFound(); // Zwraca stronę 404
     }
@@ -28,6 +31,8 @@ export default async function ProductPage({
         style: 'currency',
         currency: product.currency,
     }).format(product.price / 100);
+
+
 
     return (
         <div className="min-h-screen grid md:grid-cols-2">
@@ -74,8 +79,10 @@ export default async function ProductPage({
                 </ul>
 
                 {/* Przycisk Kupowania (Na razie atrapa) */}
+
+
                 <div className="mt-8">
-                    <CheckoutForm slug={product.slug} />
+                    <ProductActions product={product} />
                 </div>
 
             </div>
