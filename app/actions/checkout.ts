@@ -12,7 +12,7 @@ export async function createCheckoutSession(formData: FormData) {
     const product = getProductBySlug(slug);
     if (!product) throw new Error("Product not found");
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://invsbl.vercel.app";
 
     // DEFINIUJEMY KOSZTY WYSYŁKI DYNAMICZNIE
     let shippingRateData;

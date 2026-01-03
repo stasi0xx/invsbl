@@ -67,19 +67,27 @@ export async function POST(req: Request) {
             console.log("✅ Order saved to DB");
 
             // B. WYSYŁKA MAILA (RESEND)
-            await resend.emails.send({
-                from: 'INVSBL <orders@szkolaonline.com>', // W produkcji zmień na swoją domenę!
-                to: [customerEmail], // Wysyłamy do klienta
+            const { data: emailData, error: emailError } = await resend.emails.send({
+                // WAŻNE: Tutaj musi być TEOJA DOMENA, którą dodałeś w Resend!
+                // np. 'INVSBL <orders@twojadomena.pl>'
+                // Jeśli nadal testujesz bez domeny, użyj: 'onboarding@resend.dev'
+                from: 'INVSBL <orders@szkolaonline.com>',
+                to: [customerEmail],
                 subject: `Order Confirmed #${session.id.slice(-5).toUpperCase()}`,
                 react: OrderTemplate({
                     orderId: session.id.slice(-8).toUpperCase(),
-                    products: product_slug, // Tu można pobrać ładną nazwę z products.ts
+                    products: product_slug,
                     amount: `${(amountTotal / 100).toFixed(2)} ${currency.toUpperCase()}`,
                     paczkomat: paczkomat_code
                 }) as React.ReactElement,
             });
 
-            console.log("✅ Email sent");
+            if (emailError) {
+                console.error("❌ RESEND ERROR:", emailError);
+                // Nie przerywamy (return), bo baza się zapisała, ale wiemy że mail padł
+            } else {
+                console.log("✅ EMAIL SENT ID:", emailData?.id);
+            }
 
         } catch (error) {
             console.error("🔥 Error saving order/sending email:", error);
