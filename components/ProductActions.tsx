@@ -4,7 +4,13 @@ import { useCart } from "@/context/CartContext";
 import { createCheckoutSession } from "@/app/actions/checkout";
 import { ShoppingBag, Zap, Truck, Box, CheckCircle } from "lucide-react";
 import { useState } from "react";
-import { InPostMap } from "@/components/InPostMap";
+import dynamic from "next/dynamic";
+
+// Importujemy mapę tak, żeby ładowała się TYLKO w przeglądarce (ssr: false)
+const InPostMap = dynamic(() => import("@/components/InPostMap").then(mod => mod.InPostMap), {
+    ssr: false,
+    loading: () => <div className="h-[400px] w-full bg-zinc-900 animate-pulse flex items-center justify-center text-xs">ŁADOWANIE MAPY...</div>
+});
 import { clsx } from "clsx";
 
 interface Product {
