@@ -32,6 +32,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+        <head>
+            <link rel="stylesheet" href="https://geowidget.inpost.pl/inpost-geowidget.css" />
+        </head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} ${unbounded.variable} antialiased`}
         >

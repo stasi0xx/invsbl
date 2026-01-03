@@ -1,3 +1,4 @@
+@import url("https://geowidget.inpost.pl/inpost-geowidget.css");
 @import "tailwindcss";
 
 /* THEME CONFIGURATION */
@@ -17,7 +18,7 @@
   --font-body: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* ANIMATIONS (Subtelne wejścia) */
+  /* ANIMATIONS */
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-slide-up: slide-up 0.7s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 
@@ -38,12 +39,10 @@
     background-color: var(--color-background);
     color: var(--color-text-primary);
     font-family: var(--font-body);
-    /* Wygładzanie czcionek na ciemnym tle to mus */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Ukrywamy scrollbar, ale pozwalamy scrollować - estetyka */
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
@@ -52,5 +51,5 @@
 
 /* UTILITIES */
 @utility text-balance {
-  text-wrap: balance; /* Nowy standard CSS dla ładnych nagłówków */
+  text-wrap: balance;
 }
