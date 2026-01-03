@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header"; // <--- Importujemy Header
 import { CartProvider } from "@/context/CartContext"; // <--- NOWE
 import { CartDrawer } from "@/components/CartDrawer";
+import {Footer} from "@/components/Footer";
 
 const unbounded = Unbounded({
     variable: "--font-unbounded",
@@ -39,9 +40,14 @@ export default function RootLayout({
             <Header />
             <CartDrawer /> {/* <--- KOSZYK JEST ZAWSZE W STRUKTURZE */}
 
-            <main className="pt-[100px]">
-                {children}
-            </main>
+            <div className="flex flex-col min-h-screen">
+                <main className="flex-1 pt-[100px]">
+                    {children}
+                </main>
+
+                {/* 3. Wstaw Stopkę tutaj */}
+                <Footer />
+            </div>
         </CartProvider>
 
         </body>
