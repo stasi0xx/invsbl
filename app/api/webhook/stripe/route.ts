@@ -69,7 +69,7 @@ export async function POST(req: Request) {
             // B. WYSYŁKA MAILA (RESEND)
             await resend.emails.send({
                 from: 'INVSBL <onboarding@resend.dev>', // W produkcji zmień na swoją domenę!
-                to: [customerEmail], // Wysyłamy do klienta
+                to: ['delivered@resend.dev'], // Wysyłamy do klienta
                 subject: `Order Confirmed #${session.id.slice(-5).toUpperCase()}`,
                 react: OrderTemplate({
                     orderId: session.id.slice(-8).toUpperCase(),
