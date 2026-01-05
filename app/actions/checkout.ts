@@ -12,61 +12,69 @@ export async function createCheckoutSession(formData: FormData) {
     const isMultiItem = formData.get("isMultiItem") === "true";
 
     let lineItems = [];
-    let metadata = {};
+    let metadata: Record<string, string | number> = {};
 
     if (isMultiItem && cartDataString) {
-        // --- LOGIKA DLA KOSZYKA (WIELE PRODUKTÓW) ---
+        // --- A. LOGIKA DLA KOSZYKA (WIELE PRODUKTÓW) ---
+        // Tutaj rozmiar jest już zaszyty w "name" produktu (np. "Bluza [L]")
+        // bo tak zapisaliśmy go w CartContext w poprzednim kroku.
+
         const cartItems = JSON.parse(cartDataString);
 
         lineItems = cartItems.map((item: any) => ({
             price_data: {
                 currency: item.currency,
                 product_data: {
-                    name: item.name,
+                    name: item.name, // Tu będzie np. "CONCRETE HOODIE [L]"
                 },
                 unit_amount: item.price,
             },
             quantity: item.quantity,
         }));
 
-        // W przypadku wielu produktów, w metadanych zapiszemy ogólne info
-        // lub możemy zapisać JSON string ID produktów (uwaga na limit znaków w Stripe Metadata!)
+        // Metadane dla koszyka
         metadata = {
             type: "cart_checkout",
             items_count: cartItems.length,
-            // Możemy dodać product_slugs po przecinku dla analityki
+            // Lista ID produktów dla statystyk
             product_slugs: cartItems.map((i: any) => i.productSlug).join(","),
-            delivery_method: formData.get("deliveryMethod") || "courier",
+            delivery_method: (formData.get("deliveryMethod") as string) || "courier",
+            paczkomat_code: (formData.get("paczkomatCode") as string) || "",
         };
 
     } else {
-        // --- LOGIKA DLA POJEDYNCZEGO PRODUKTU (STARA) ---
+        // --- B. LOGIKA DLA POJEDYNCZEGO PRODUKTU (KUP TERAZ) ---
         const productSlug = formData.get("productSlug") as string;
         const priceAmount = parseFloat(formData.get("priceAmount") as string);
         const priceCurrency = formData.get("priceCurrency") as string;
-        const productName = formData.get("productName") as string;
+        const productName = formData.get("productName") as string; // To zawiera nazwę z rozmiarem (z frontend)
         const deliveryMethod = formData.get("deliveryMethod") as string;
         const paczkomatCode = formData.get("paczkomatCode") as string;
+
+        // NOWOŚĆ: Pobieramy rozmiar osobno
+        const size = formData.get("size") as string;
 
         lineItems = [{
             price_data: {
                 currency: priceCurrency,
-                product_data: { name: productName },
+                product_data: { name: productName }, // Wyświetli się klientowi w Stripe
                 unit_amount: priceAmount,
             },
             quantity: 1,
         }];
 
         metadata = {
+            type: "single_checkout",
             product_slug: productSlug,
+            size: size || "N/A", // <--- ZAPISUJEMY ROZMIAR W METADANYCH
             delivery_method: deliveryMethod,
             paczkomat_code: paczkomatCode || "",
         };
     }
 
-    // Tworzymy sesję
+    // Tworzymy sesję Stripe
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card", "blik"],
+        payment_method_types: ["card", "blik", "p24"], // Dodałem p24 dla pewności w PL
         line_items: lineItems,
         mode: "payment",
         success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
