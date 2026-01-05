@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
             // 3. E-MAIL POTWIERDZAJĄCY (Styl Industrialny)
             await resend.emails.send({
-                from: 'INVSBL <orders@twojadomena.pl>', // Pamiętaj o weryfikacji domeny w Resend
+                from: 'INVSBL <orders@szkolaonline.com>', // Pamiętaj o weryfikacji domeny w Resend
                 to: [session.customer_details?.email],
                 subject: `Order Confirmed #${newOrder.id}`,
                 react: OrderTemplate({
