@@ -1,28 +1,15 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import { createCheckoutSession } from "@/app/actions/checkout";
+import { createCheckoutSession } from "@/app/actions/checkout"; // Upewnij się, że importujesz createCheckoutSession
 import { ShoppingBag, Zap, Truck, Box } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
-import { SizeChartModal } from "@/components/SizeChartModal"; // <--- 1. Import Modala
+import { SizeChartModal } from "@/components/SizeChartModal";
 
-interface ProductSize {
-    label: string;
-    available: boolean;
-}
-
-interface Product {
-
-    id: string;
-    name: string;
-    price: number;
-    currency: string;
-    sizes: ProductSize[];
-    product: string;
-    image: string;
-}
+// 1. IMPORTUJEMY TYP Z PLIKU GŁÓWNEGO (to naprawia błąd)
+import { Product } from "@/lib/product";
 
 const InPostMap = dynamic(() => import("@/components/InPostMap").then(mod => mod.InPostMap), {
     ssr: false,
@@ -36,8 +23,6 @@ export function ProductActions({ product }: { product: Product }) {
     const [deliveryMethod, setDeliveryMethod] = useState<"courier" | "inpost">("courier");
     const [selectedPoint, setSelectedPoint] = useState<any>(null);
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
-
-    // 2. Stan otwarcia tabeli rozmiarów
     const [isChartOpen, setIsChartOpen] = useState(false);
 
     const isSizeSelected = !!selectedSize;
@@ -65,7 +50,6 @@ export function ProductActions({ product }: { product: Product }) {
 
     return (
         <>
-            {/* 3. Wstawiamy Modal (jest domyślnie ukryty, pokaże się po zmianie stanu) */}
             <SizeChartModal
                 isOpen={isChartOpen}
                 onClose={() => setIsChartOpen(false)}
@@ -78,8 +62,6 @@ export function ProductActions({ product }: { product: Product }) {
                 <div>
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">Wybierz Rozmiar</span>
-
-                        {/* 4. Przycisk otwierający modal */}
                         <button
                             onClick={() => setIsChartOpen(true)}
                             className="text-xs text-zinc-400 underline hover:text-white transition-colors"
@@ -112,9 +94,6 @@ export function ProductActions({ product }: { product: Product }) {
                             </button>
                         ))}
                     </div>
-                    {!isSizeSelected && (
-                        <p className="text-[10px] text-acid mt-2 animate-pulse hidden">Wybierz rozmiar, aby kontynuować</p>
-                    )}
                 </div>
 
                 {/* WYBÓR DOSTAWY */}
