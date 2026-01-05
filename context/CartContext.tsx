@@ -8,7 +8,7 @@ export interface CartItem {
     name: string;
     price: number;
     currency: string;
-    image?: string;
+    image: string;
     quantity: number;
     deliveryMethod?: string; // Aby zachować logikę z checkoutu
     paczkomatCode?: string;

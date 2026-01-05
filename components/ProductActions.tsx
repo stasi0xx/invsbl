@@ -14,11 +14,14 @@ interface ProductSize {
 }
 
 interface Product {
+
     id: string;
     name: string;
     price: number;
     currency: string;
     sizes: ProductSize[];
+    product: string;
+    image: string;
 }
 
 const InPostMap = dynamic(() => import("@/components/InPostMap").then(mod => mod.InPostMap), {
@@ -51,6 +54,7 @@ export function ProductActions({ product }: { product: Product }) {
             price: product.price,
             currency: product.currency,
             quantity: 1,
+            image: product.image,
         });
 
         setTimeout(() => {

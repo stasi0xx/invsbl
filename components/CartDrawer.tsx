@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 import { createCheckoutSession } from "@/app/actions/checkout";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 // Importujemy mapę tak, żeby ładowała się TYLKO w przeglądarce (ssr: false)
 const InPostMap = dynamic(() => import("@/components/InPostMap").then(mod => mod.InPostMap), {
@@ -64,8 +65,18 @@ export function CartDrawer() {
                             <div className="space-y-6 mb-8">
                                 {items.map((item) => (
                                     <div key={item.id} className="flex gap-4 animate-fade-in">
-                                        <div className="w-20 h-24 bg-zinc-900 rounded border border-white/5 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                            <span className="text-xs text-zinc-700">IMG</span>
+                                        <div className="relative w-20 h-24 bg-zinc-900 rounded border border-white/5 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                            {/* Dodajemy sprawdzenie, czy item.image istnieje */}
+                                            {item.image ? (
+                                                <Image
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    fill
+                                                    className="object-cover" // Zamiast propa objectFit, używamy klasy Tailwind
+                                                />
+                                            ) : (
+                                                <span className="text-xs text-zinc-700">IMG</span>
+                                            )}
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-between py-1">

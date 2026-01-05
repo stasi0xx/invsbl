@@ -2,8 +2,6 @@ import { pgTable, serial, text, integer, timestamp, jsonb } from "drizzle-orm/pg
 
 export const orders = pgTable("orders", {
     id: serial("id").primaryKey(),
-
-    // Kluczowe do powiązania płatności
     stripeSessionId: text("stripe_session_id").unique().notNull(),
 
     // Dane klienta
@@ -11,18 +9,21 @@ export const orders = pgTable("orders", {
     customerName: text("customer_name"),
     customerPhone: text("customer_phone"),
 
-    // Adres (dla kuriera) lub dane paczkomatu
+    // Logistyka
     shippingAddress: jsonb("shipping_address"),
     deliveryMethod: text("delivery_method").notNull(), // 'courier' | 'inpost'
-    paczkomatCode: text("paczkomat_code"),             // Np. 'WAW22A'
+    paczkomatCode: text("paczkomat_code"),
 
-    // Produkt
-    productSlug: text("product_slug").notNull(),
-    amountTotal: integer("amount_total").notNull(), // W groszach
+    // NOWOŚĆ: Numer listu przewozowego (do śledzenia)
+    trackingNumber: text("tracking_number"),
+
+    // ZMIANA: Zamiast jednego sluga, trzymamy tablicę produktów (JSON)
+    // Struktura: [{ name: "Hoodie [L]", price: 34900, quantity: 1, image: "..." }]
+    items: jsonb("items").notNull(),
+
+    amountTotal: integer("amount_total").notNull(),
     currency: text("currency").notNull(),
-
-    // Status zamówienia
-    status: text("status").notNull().default("pending"), // pending -> paid -> shipped
+    status: text("status").notNull().default("paid"), // paid, shipped, delivered
 
     createdAt: timestamp("created_at").defaultNow(),
 });

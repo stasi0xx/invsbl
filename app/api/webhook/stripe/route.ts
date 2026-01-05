@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { db } from "@/db"; // Import Twojej bazy
-import { orders } from "@/db/schema"; // Import tabeli
+import { db } from "@/db";
+import { orders } from "@/db/schema";
 import { resend } from "@/lib/resend";
 import { OrderTemplate } from "@/components/emails/OrderTemplate";
 
@@ -11,86 +11,70 @@ export async function POST(req: Request) {
     const signature = (await headers()).get("Stripe-Signature") as string;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!webhookSecret) {
-        return new NextResponse("Missing STRIPE_WEBHOOK_SECRET", { status: 500 });
-    }
+    if (!webhookSecret) return new NextResponse("Missing Secret", { status: 500 });
 
     let event;
-
-    // 1. Weryfikacja czy to na pewno Stripe (Security)
     try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err: any) {
-        console.error(`❌ Webhook signature verification failed.`, err.message);
         return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
     }
 
-    // 2. Obsługa zdarzenia: Płatność udana
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as any;
 
-        console.log(`💰 Payment success: ${session.id}`);
+        // 1. Pobieramy pełną listę zakupionych produktów (Line Items) ze Stripe
+        // To konieczne, bo w samym obiekcie session nie ma szczegółów koszyka
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
-        // Wyciągamy dane z metadanych (to co wysłaliśmy w checkout.ts)
-        const { product_slug, delivery_method, paczkomat_code } = session.metadata || {};
+        // Formatujemy przedmioty do zapisu w naszej bazie (JSONB)
+        const orderItems = lineItems.data.map((item) => ({
+            name: item.description, // Tutaj będzie np. "Hoodie [L]"
+            quantity: item.quantity,
+            amount: item.amount_total,
+            currency: item.currency
+        }));
 
-        // Dane klienta
-        const customerEmail = session.customer_details?.email;
-        const customerName = session.customer_details?.name;
-        const amountTotal = session.amount_total;
-        const currency = session.currency;
-
-        // Adres (dla kuriera)
-        const shippingDetails = session.shipping_details || session.customer_details;
-
-        if (!customerEmail || !product_slug) {
-            console.error("❌ Missing metadata or email");
-            return new NextResponse("Missing data", { status: 400 });
-        }
+        // Wyciągamy metadane (logistyka)
+        const { delivery_method, paczkomat_code } = session.metadata || {};
 
         try {
-            // A. ZAPIS DO BAZY DANYCH (NEON)
-            await db.insert(orders).values({
+            // 2. ZAPIS DO BAZY (Zaktualizowana struktura)
+            const [newOrder] = await db.insert(orders).values({
                 stripeSessionId: session.id,
-                customerEmail: customerEmail,
-                customerName: customerName,
+                customerEmail: session.customer_details?.email,
+                customerName: session.customer_details?.name,
                 customerPhone: session.customer_details?.phone || "",
-                shippingAddress: shippingDetails, // Drizzle sam to zrzuci do JSON
-                deliveryMethod: delivery_method || "unknown",
+                shippingAddress: session.shipping_details || session.customer_details,
+
+                deliveryMethod: delivery_method || "courier",
                 paczkomatCode: paczkomat_code || null,
-                productSlug: product_slug,
-                amountTotal: amountTotal,
-                currency: currency,
+
+                items: orderItems, // <--- Zapisujemy całą listę zakupów
+
+                amountTotal: session.amount_total,
+                currency: session.currency,
                 status: "paid",
-            });
+            }).returning();
 
-            console.log("✅ Order saved to DB");
-
-            // B. WYSYŁKA MAILA (RESEND)
-            const { data: emailData, error: emailError } = await resend.emails.send({
-                // WAŻNE: Tutaj musi być TEOJA DOMENA, którą dodałeś w Resend!
-                // np. 'INVSBL <orders@twojadomena.pl>'
-                // Jeśli nadal testujesz bez domeny, użyj: 'onboarding@resend.dev'
-                from: 'INVSBL <orders@szkolaonline.com>',
-                to: [customerEmail],
-                subject: `Order Confirmed #${session.id.slice(-5).toUpperCase()}`,
+            // 3. E-MAIL POTWIERDZAJĄCY (Styl Industrialny)
+            await resend.emails.send({
+                from: 'INVSBL <orders@twojadomena.pl>', // Pamiętaj o weryfikacji domeny w Resend
+                to: [session.customer_details?.email],
+                subject: `Order Confirmed #${newOrder.id}`,
                 react: OrderTemplate({
-                    orderId: session.id.slice(-8).toUpperCase(),
-                    products: product_slug,
-                    amount: `${(amountTotal / 100).toFixed(2)} ${currency.toUpperCase()}`,
+                    orderId: newOrder.id,
+                    items: orderItems, // Przekazujemy listę do maila
+                    amount: `${(session.amount_total / 100).toFixed(2)} ${session.currency.toUpperCase()}`,
+                    deliveryMethod: delivery_method || "courier",
                     paczkomat: paczkomat_code
                 }) as React.ReactElement,
             });
 
-            if (emailError) {
-                console.error("❌ RESEND ERROR:", emailError);
-                // Nie przerywamy (return), bo baza się zapisała, ale wiemy że mail padł
-            } else {
-                console.log("✅ EMAIL SENT ID:", emailData?.id);
-            }
+            console.log(`✅ Order #${newOrder.id} processed successfully`);
 
         } catch (error) {
-            console.error("🔥 Error saving order/sending email:", error);
+            console.error("🔥 Error processing order:", error);
             return new NextResponse("Internal Server Error", { status: 500 });
         }
     }
