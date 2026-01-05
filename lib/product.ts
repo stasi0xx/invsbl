@@ -1,50 +1,82 @@
-// src/lib/products.ts
+export type ProductSize = {
+    label: string;
+    available: boolean;
+};
 
 export type Product = {
     id: string;
     name: string;
     slug: string;
-    price: number; // Cena w groszach (np. 25000 = 250.00 PLN)
+    price: number;
     currency: string;
     description: string;
-    features: string[]; // Lista cech (gramatura, krój)
-    image: string; // Na razie placeholder, potem podmienisz na prawdziwe
+    features: string[];
+    image: string;
+    images: string[];
+    sizes: ProductSize[]; // <--- NOWOŚĆ: Tablica rozmiarów
 };
 
 export const PRODUCTS: Product[] = [
     {
-        id: "prod_001",
-        name: "CONCRETE HOODIE",
-        slug: "concrete-hoodie-v1",
-        price: 34900, // 349.00 PLN
+        id: "prod_hoodie",
+        name: "INVISIBLE SCRIPT HEAVYWEIGHT HOODIE",
+        slug: "invisible-script-hoodie",
+        price: 34900,
         currency: "pln",
-        description: "Zbroja na miejską dżunglę. Gramatura 480gsm. Niezniszczalna.",
+        description: "Heavyweight Cotton Hoodie. Zbroja na miejską dżunglę. Gramatura 480gsm.",
         features: [
             "480gsm Heavyweight Cotton",
             "Boxy Fit / Dropped Shoulders",
-            "Acid Wash Finish",
+            "Invisible Script Embroidery",
             "Made in Poland"
         ],
-        image: "/CONCRETE HOODIE.webp", // Wrzuć cokolwiek do folderu /public
+        image: "/bluza-przod.webp",
+        images: [
+            "/bluza-przod.webp",
+            "/bluza-tyl.webp", // Pamiętaj o podmianie na tył
+            "/lifestyle1.webp",
+            "/lifestyle2.webp",
+            "/lifestyle3.webp",
+        ],
+        // Definiujemy dostępność (np. L wyprzedane)
+        sizes: [
+            { label: "XS", available: true },
+            { label: "S", available: true },
+            { label: "M", available: true },
+            { label: "L", available: true }, // WYPRZEDANE
+            { label: "XL", available: false },
+        ]
     },
     {
-        id: "prod_002",
-        name: "VOID TEE",
-        slug: "void-tee-v1",
-        price: 15900, // 159.00 PLN
+        id: "prod_pants",
+        name: "INVISIBLE SCRIPT HEAVYWEIGHT SWEATPANTS",
+        slug: "invisible-script-sweatpants",
+        price: 29900,
         currency: "pln",
-        description: "T-shirt czarniejszy niż twoja przyszłość. Mercerizowana bawełna.",
+        description: "Idealne do kompletu. Ciężka bawełna, krój relaxed.",
         features: [
-            "280gsm Heavy Jersey",
-            "Oversized Fit",
-            "Silicon Softener Wash",
-            "No Branding (Inside Tag Only)"
+            "480gsm Heavyweight Cotton",
+            "Relaxed Fit / Stacked Hem",
+            "Deep Pockets",
+            "Invisible Script Print"
         ],
-        image: "/placeholder-tee.jpg",
+        image: "/spodnie-przod.webp",
+        images: [
+            "/spodnie-przod.webp",
+            "/spodnie-tyl.webp",
+            "/lifestyle1.webp",
+            "/lifestyle2.webp",
+        ],
+        sizes: [
+            { label: "XS", available: true },
+            { label: "S", available: true },
+            { label: "M", available: true },
+            { label: "L", available: true },
+            { label: "XL", available: false },
+        ]
     }
 ];
 
-// Helper do pobierania produktu po slugu (użyjemy na stronie produktu)
 export function getProductBySlug(slug: string): Product | undefined {
     return PRODUCTS.find((p) => p.slug === slug);
 }

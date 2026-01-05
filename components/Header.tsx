@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image"; // <--- 1. Importujemy Image
 import { Menu, ShoppingBag, X, Search } from "lucide-react";
 import { clsx } from "clsx";
 import { useCart } from "@/context/CartContext";
@@ -18,7 +19,6 @@ export function Header() {
             if (typeof window !== "undefined") {
                 const currentScrollY = window.scrollY;
 
-                // Tolerancja 10px, żeby drgania palca nie chowały menu
                 if (currentScrollY > lastScrollY && currentScrollY > 50) {
                     setIsVisible(false);
                 } else {
@@ -46,7 +46,7 @@ export function Header() {
             {/* HEADER WRAPPER */}
             <header
                 className={clsx(
-                    "fixed top-0 left-0 w-full z-[80] transition-transform duration-300 ease-in-out border-b border-white/10",
+                    "fixed top-0 left-0 w-full z-[80] transition-transform duration-300 ease-in-out",
                     isVisible ? "translate-y-0" : "-translate-y-full"
                 )}
             >
@@ -56,13 +56,12 @@ export function Header() {
                 </div>
 
                 {/* GŁÓWNY PASEK */}
-                <div className="bg-[#09090b]/90 backdrop-blur-md w-full px-4 md:px-8 h-16 md:h-20 flex items-center justify-between relative z-[81]">
+                <div className="bg-transparent w-full px-4 md:px-8 h-16 md:h-20 flex items-center justify-between relative z-[81]">
 
                     {/* LEWA: Burger */}
                     <div className="flex items-center gap-4 w-1/3">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
-                            // Zwiększamy obszar kliknięcia (p-3) i usuwamy domyślne podświetlenie tapnięcia na mobile
                             className="p-3 -ml-3 hover:bg-white/5 rounded-full transition-colors active:scale-95 touch-manipulation"
                             aria-label="Otwórz menu"
                         >
@@ -74,17 +73,23 @@ export function Header() {
                         </button>
                     </div>
 
-                    {/* ŚRODEK: Logo */}
+                    {/* ŚRODEK: LOGO (ZMIANA TUTAJ) */}
                     <div className="w-1/3 flex justify-center pointer-events-none">
-                        {/* pointer-events-none na kontenerze, żeby nie blokował, ale auto na samym linku */}
                         <Link
                             href="/"
-                            className="group pointer-events-auto"
+                            className="pointer-events-auto hover:opacity-80 transition-opacity"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
-              <span className="font-display text-2xl md:text-3xl font-black tracking-tighter text-[#f4f4f5] group-hover:text-[#d9f99d] transition-colors">
-                INVSBL
-              </span>
+                            {/* Używamy Next Image dla optymalizacji */}
+                            {/* width/height ustawiamy proporcjonalnie do oryginału, ale klasy CSS kontrolują wyświetlanie */}
+                            <Image
+                                src="/logo.png"
+                                alt="INVSBL Logo"
+                                width={150} // Orientacyjna szerokość oryginału
+                                height={40} // Orientacyjna wysokość
+                                className="h-6 md:h-8 w-auto object-contain" // h-6 (mobile) / h-8 (desktop) - logo dopasuje się automatycznie
+                                priority // Logo ładujemy priorytetowo
+                            />
                         </Link>
                     </div>
 
@@ -92,7 +97,6 @@ export function Header() {
                     <div className="flex items-center justify-end gap-4 w-1/3">
                         <button
                             onClick={openCart}
-                            // Zwiększamy obszar kliknięcia (p-3)
                             className="relative group p-3 -mr-3 hover:bg-white/5 rounded-full transition-colors active:scale-95 touch-manipulation"
                             aria-label="Otwórz koszyk"
                         >
@@ -112,7 +116,6 @@ export function Header() {
             <div
                 className={clsx(
                     "fixed inset-0 z-[90] bg-[#09090b] transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]",
-                    // KLUCZOWA ZMIANA: pointer-events-none kiedy ukryte
                     isMobileMenuOpen
                         ? "translate-y-0 opacity-100 pointer-events-auto"
                         : "-translate-y-full opacity-0 pointer-events-none"
@@ -131,7 +134,7 @@ export function Header() {
                 <nav className="flex flex-col items-center justify-center h-[calc(100vh-100px)] space-y-6 p-8">
                     {[
                         { name: "Strona Główna", href: "/" },
-                        { name: "Sklep", href: "/#products" }, // Zakotwiczenie
+                        { name: "Sklep", href: "/#products" },
                         { name: "Misja", href: "/about" },
                         { name: "Kontakt", href: "/contact" },
                     ].map((item) => (

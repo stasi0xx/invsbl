@@ -33,23 +33,23 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="pl">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} ${unbounded.variable} antialiased bg-[#09090b] text-[#f4f4f5]`}
-        >
+        <body className="...">
         <CartProvider>
             <Header />
-            <CartDrawer /> {/* <--- KOSZYK JEST ZAWSZE W STRUKTURZE */}
+            <CartDrawer />
 
             <div className="flex flex-col min-h-screen">
-                <main className="flex-1 pt-[100px]">
+                {/* ZMIANA TUTAJ: */}
+                {/* 1. Zmieniono <main> na <div> (żeby nie dublować main z page.tsx) */}
+                {/* 2. USUNIĘTO klasę pt-[100px] - teraz Hero wjedzie pod header */}
+                <div className="flex-1">
                     {children}
-                </main>
+                </div>
 
-                {/* 3. Wstaw Stopkę tutaj */}
                 <Footer />
             </div>
-        </CartProvider>
 
+        </CartProvider>
         </body>
         </html>
     );
