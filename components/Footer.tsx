@@ -17,18 +17,14 @@ export function Footer() {
               </span>
                         </Link>
                         <p className="text-sm leading-relaxed max-w-xs">
-                            Streetwear z przyszłości.
-                            Beton, kwas i widoczność.
                             Tworzymy ubrania dla tych, którzy nie chcą zniknąć w tłumie.
                         </p>
                         {/* SOCIAL MEDIA */}
                         <div className="flex gap-4">
-                            <SocialLink href="https://instagram.com" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
-                            <SocialLink href="https://facebook.com" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
+                            <SocialLink href="https://www.instagram.com/invsbl/" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
+                            <SocialLink href="https://www.facebook.com/invsbll" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
                             {/* TikTok (Custom SVG bo Lucide nie ma) */}
-                            <SocialLink href="https://tiktok.com" label="TikTok" icon={
-                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.65-1.55-1.09-.01 1.98-.01 3.96-.01 5.95 0 2.22-.85 4.47-2.42 6.06-1.89 1.92-4.8 2.5-7.3 1.55-1.95-.73-3.46-2.42-3.95-4.43-.53-2.19.16-4.59 1.71-6.17 1.34-1.36 3.28-1.98 5.16-1.63v4.09c-1.3-.39-2.79.16-3.51 1.35-.76 1.25-.43 3.01.76 3.92 1.15.89 2.9.72 3.86-.41.87-1.02.93-2.44.17-3.66 0-3.83.01-7.66.02-11.49-.04-.01-.06-.01-.15-.01z"/></svg>
-                            } />
+
                         </div>
                     </div>
 

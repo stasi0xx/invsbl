@@ -23,20 +23,19 @@ export const PRODUCTS: Product[] = [
         slug: "invisible-script-hoodie",
         price: 34900,
         currency: "pln",
-        description: "Heavyweight Cotton Hoodie. Zbroja na miejską dżunglę. Gramatura 480gsm.",
+        description: "Heavyweight Cotton Hoodie.Gramatura 480gsm.",
         features: [
             "480gsm Heavyweight Cotton",
             "Boxy Fit / Dropped Shoulders",
             "Invisible Script Embroidery",
             "Made in Poland"
         ],
-        image: "/bluza-przod.webp",
+        image: "/bluza-zlozone.webp",
         images: [
+            "/bluza-zlozone.webp",
             "/bluza-przod.webp",
             "/bluza-tyl.webp", // Pamiętaj o podmianie na tył
-            "/lifestyle1.webp",
-            "/lifestyle2.webp",
-            "/lifestyle3.webp",
+
         ],
         // Definiujemy dostępność (np. L wyprzedane)
         sizes: [
@@ -44,7 +43,7 @@ export const PRODUCTS: Product[] = [
             { label: "S", available: true },
             { label: "M", available: true },
             { label: "L", available: true }, // WYPRZEDANE
-            { label: "XL", available: false },
+            { label: "XL", available: true },
         ]
     },
     {
@@ -64,15 +63,13 @@ export const PRODUCTS: Product[] = [
         images: [
             "/spodnie-przod.webp",
             "/spodnie-tyl.webp",
-            "/lifestyle1.webp",
-            "/lifestyle2.webp",
         ],
         sizes: [
             { label: "XS", available: true },
             { label: "S", available: true },
             { label: "M", available: true },
             { label: "L", available: true },
-            { label: "XL", available: false },
+            { label: "XL", available: true },
         ]
     }
 ];
