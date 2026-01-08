@@ -131,7 +131,7 @@ export function Header() {
                     </button>
                 </div>
 
-                <nav className="flex flex-col items-center justify-center h-[calc(100vh-100px)] space-y-6 p-8">
+                <nav className="flex flex-col items-center justify-center h-[calc(100vh-100px)] space-y-6 p-8 w-full">
                     {[
                         { name: "Strona Główna", href: "/" },
                         { name: "Sklep", href: "/#products" },
@@ -142,15 +142,15 @@ export function Header() {
                             key={item.name}
                             href={item.href}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-4xl font-display font-bold text-[#f4f4f5] hover:text-[#d9f99d] transition-colors"
+                            className="text-3xl md:text-4xl font-display font-bold text-[#f4f4f5] hover:text-[#d9f99d] transition-colors text-center w-full"
                         >
                             {item.name}
                         </Link>
                     ))}
 
                     <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex justify-center gap-6">
-                        <Link href="/terms" className="text-[#a1a1aa] text-xs uppercase hover:text-white">Regulamin</Link>
-                        <Link href="/privacy" className="text-[#a1a1aa] text-xs uppercase hover:text-white">Prywatność</Link>
+                        <Link href="/terms" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Regulamin</Link>
+                        <Link href="/privacy" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Prywatność</Link>
                     </div>
                 </nav>
             </div>
