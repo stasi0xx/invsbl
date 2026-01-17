@@ -14,6 +14,7 @@ export type Product = {
     image: string;
     images: string[];
     sizes: ProductSize[]; // <--- NOWOŚĆ: Tablica rozmiarów
+    preorderDate: string;
 };
 
 export const PRODUCTS: Product[] = [
@@ -34,7 +35,14 @@ export const PRODUCTS: Product[] = [
         images: [
             "/bluza-zlozone.webp",
             "/bluza-przod.webp",
-            "/bluza-tyl.webp", // Pamiętaj o podmianie na tył
+            "/bluza-tyl.webp",
+            "/bluza1.webp",
+            "/bluza2.webp",
+            "/bluza3.webp",
+            "/calosc1.webp",
+            "/calosc2.webp",
+            "/calosc3.webp",
+            // Pamiętaj o podmianie na tył
 
         ],
         // Definiujemy dostępność (np. L wyprzedane)
@@ -44,7 +52,8 @@ export const PRODUCTS: Product[] = [
             { label: "M", available: true },
             { label: "L", available: true }, // WYPRZEDANE
             { label: "XL", available: true },
-        ]
+        ],
+        preorderDate: "10 LUTEGO 2026",
     },
     {
         id: "prod_pants",
@@ -63,6 +72,12 @@ export const PRODUCTS: Product[] = [
         images: [
             "/spodnie-przod.webp",
             "/spodnie-tyl.webp",
+            "/spodnie1.webp",
+            "/spodnie2.webp",
+            "/spodnie3.webp",
+            "/calosc1.webp",
+            "/calosc2.webp",
+            "/calosc3.webp",
         ],
         sizes: [
             { label: "XS", available: true },
@@ -70,7 +85,8 @@ export const PRODUCTS: Product[] = [
             { label: "M", available: true },
             { label: "L", available: true },
             { label: "XL", available: true },
-        ]
+        ],
+        preorderDate: "10 LUTEGO 2026",
     }
 ];
 

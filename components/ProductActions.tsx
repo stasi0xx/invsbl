@@ -1,14 +1,12 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import { createCheckoutSession } from "@/app/actions/checkout"; // Upewnij się, że importujesz createCheckoutSession
-import { ShoppingBag, Zap, Truck, Box } from "lucide-react";
+import { createCheckoutSession } from "@/app/actions/checkout";
+import { ShoppingBag, Zap, Truck, Box, CalendarClock } from "lucide-react"; // Import nowej ikony
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { clsx } from "clsx";
 import { SizeChartModal } from "@/components/SizeChartModal";
-
-// 1. IMPORTUJEMY TYP Z PLIKU GŁÓWNEGO (to naprawia błąd)
 import { Product } from "@/lib/product";
 
 const InPostMap = dynamic(() => import("@/components/InPostMap").then(mod => mod.InPostMap), {
@@ -25,6 +23,9 @@ export function ProductActions({ product }: { product: Product }) {
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [isChartOpen, setIsChartOpen] = useState(false);
 
+    // Sprawdzamy czy to pre-order
+    const isPreorder = !!product.preorderDate;
+
     const isSizeSelected = !!selectedSize;
     const isBuyNowDisabled = !isSizeSelected || (deliveryMethod === "inpost" && !selectedPoint);
 
@@ -35,7 +36,7 @@ export function ProductActions({ product }: { product: Product }) {
         addItem({
             id: `${product.id}-${selectedSize}`,
             productSlug: product.id,
-            name: `${product.name} [${selectedSize}]`,
+            name: `${product.name} [${selectedSize}]${isPreorder ? ' (PRE-ORDER)' : ''}`, // Dodajemy info do koszyka
             price: product.price,
             currency: product.currency,
             quantity: 1,
@@ -95,6 +96,20 @@ export function ProductActions({ product }: { product: Product }) {
                         ))}
                     </div>
                 </div>
+
+                {/* INFO O PRE-ORDERZE (Jeśli dotyczy) */}
+                {isPreorder && (
+                    <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 rounded animate-fade-in">
+                        <CalendarClock className="w-5 h-5 shrink-0 mt-0.5" />
+                        <div>
+                            <p className="text-sm font-bold uppercase tracking-wide">Przedsprzedaż</p>
+                            <p className="text-xs text-yellow-200/80 mt-1 leading-relaxed">
+                                To jest produkt limitowany. <br/>
+                                Wysyłka zaplanowana jest na: <span className="text-white font-mono font-bold">{product.preorderDate}</span>.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 {/* WYBÓR DOSTAWY */}
                 <div className="flex gap-4 p-1 bg-white/5 rounded-lg border border-white/10">
@@ -159,12 +174,12 @@ export function ProductActions({ product }: { product: Product }) {
                         )}
                     >
                         <ShoppingBag className="w-5 h-5" />
-                        {isAdding ? "Dodawanie..." : !isSizeSelected ? "Wybierz Rozmiar" : "Do Koszyka"}
+                        {isAdding ? "Dodawanie..." : !isSizeSelected ? "Wybierz Rozmiar" : isPreorder ? "Do Koszyka" : "Do Koszyka"}
                     </button>
 
                     <form action={createCheckoutSession} className="flex-1">
                         <input type="hidden" name="productSlug" value={product.id} />
-                        <input type="hidden" name="productName" value={`${product.name} [${selectedSize || ''}]`} />
+                        <input type="hidden" name="productName" value={`${product.name} [${selectedSize || ''}]${isPreorder ? ' (PRE-ORDER)' : ''}`} />
                         <input type="hidden" name="priceAmount" value={product.price} />
                         <input type="hidden" name="priceCurrency" value={product.currency} />
                         <input type="hidden" name="deliveryMethod" value={deliveryMethod} />
@@ -188,7 +203,7 @@ export function ProductActions({ product }: { product: Product }) {
                             ) : (
                                 <>
                                     <Zap className="w-5 h-5 fill-current" />
-                                    Kup Teraz
+                                    {isPreorder ? "PRE-ORDER" : "KUP TERAZ"}
                                 </>
                             )}
                         </button>

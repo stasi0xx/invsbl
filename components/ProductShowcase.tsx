@@ -38,6 +38,13 @@ export function ProductShowcase() {
                                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                             />
+                            {product.preorderDate && (
+                                <div className="absolute top-4 left-4 z-10">
+            <span className="bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 uppercase tracking-widest">
+                Pre-Order
+            </span>
+                                </div>
+                            )}
 
                             {/* Overlay na hoverze (Subtelny) */}
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
