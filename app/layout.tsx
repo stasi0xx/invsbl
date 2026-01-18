@@ -5,9 +5,10 @@ import { Header } from "@/components/Header";
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Footer } from "@/components/Footer";
-import { GoogleTagManager } from "@next/third-parties/google"; // <--- OFICJALNA BIBLIOTEKA
-import Script from "next/script";
-import {MicrosoftClarity} from "@/components/analytics/MicrosoftClarity"; // <--- Do Clarity
+
+// --- ANALITYKA ---
+import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google"; // <--- GA4 i GTM z jednej paczki
+import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity"; // <--- Twój komponent Client Side
 
 const unbounded = Unbounded({
     variable: "--font-unbounded",
@@ -46,24 +47,20 @@ export default function RootLayout({
     return (
         <html lang="pl">
         <body className={`${unbounded.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>
-        {/* GTM ładuje się asynchronicznie, nie blokując renderowania */}
+
+        {/* 1. Google Tag Manager (Do Pixeli FB, TikToka, reklam itp.) */}
         {process.env.NEXT_PUBLIC_GTM_ID && (
             <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
         )}
 
-        {/* Microsoft Clarity - Mapa kliknięć */}
-        {process.env.NEXT_PUBLIC_CLARITY_ID && (
-            <Script id="microsoft-clarity" strategy="afterInteractive">
-                {`
-                            (function(c,l,a,r,i,t,y){
-                                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                            })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_ID}");
-                        `}
-            </Script>
+        {/* 2. Google Analytics 4 (Kluczowe dla e-commerce: sprzedaż, ruch) */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
+
+        {/* 3. Microsoft Clarity (Mapy cieplne i nagrania sesji) */}
         <MicrosoftClarity />
+
         <CartProvider>
             <Header />
             <CartDrawer />
