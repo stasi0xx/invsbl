@@ -135,8 +135,7 @@ export function Header() {
                     {[
                         { name: "Strona Główna", href: "/" },
                         { name: "Sklep", href: "/#products" },
-                        { name: "Misja", href: "/about" },
-                        { name: "Kontakt", href: "/contact" },
+                        { name: "Kontakt", href: "/kontakt" },
                     ].map((item) => (
                         <Link
                             key={item.name}
@@ -149,8 +148,8 @@ export function Header() {
                     ))}
 
                     <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex justify-center gap-6">
-                        <Link href="/terms" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Regulamin</Link>
-                        <Link href="/privacy" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Prywatność</Link>
+                        <Link href="/regulamin" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Regulamin</Link>
+                        <Link href="/polityka-prywatnosci" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Prywatność</Link>
                     </div>
                 </nav>
             </div>
