@@ -99,42 +99,42 @@ export function ProductActions({ product }: { product: Product }) {
 
                 {/* INFO O PRE-ORDERZE (Jeśli dotyczy) */}
                 {isPreorder && (
-                    <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 rounded animate-fade-in">
-                        <CalendarClock className="w-5 h-5 shrink-0 mt-0.5" />
-                        <div>
-                            <p className="text-sm font-bold uppercase tracking-wide">Przedsprzedaż</p>
-                            <p className="text-xs text-yellow-200/80 mt-1 leading-relaxed">
-                                To jest produkt limitowany. <br/>
-                                Wysyłka zaplanowana jest na: <span className="text-white font-mono font-bold">{product.preorderDate}</span>.
-                            </p>
+                    <div className="flex flex-col gap-2 p-3 bg-yellow-500/5 border border-yellow-500/20 text-yellow-500 rounded animate-fade-in">
+                        <div className="flex items-center gap-2 mb-1">
+                            <CalendarClock className="w-4 h-4 shrink-0" />
+                            <span className="text-xs font-bold uppercase tracking-widest">PRE-ORDER</span>
                         </div>
+                        <p className="text-[11px] text-yellow-200/80 leading-tight">
+                            Wysyłka zaplanowana na: <span className="text-white font-mono font-bold ml-1">{product.preorderDate}</span>.
+                            <span className="block mt-1 opacity-60">Produkt limitowany, ilość sztuk ograniczona.</span>
+                        </p>
                     </div>
                 )}
 
-                {/* WYBÓR DOSTAWY */}
-                <div className="flex gap-4 p-1 bg-white/5 rounded-lg border border-white/10">
+                {/* WYBÓR DOSTAWY (Wersja Compact) */}
+                <div className="grid grid-cols-2 gap-3">
                     <button
                         onClick={() => setDeliveryMethod("courier")}
                         className={clsx(
-                            "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold uppercase transition-all rounded",
+                            "flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase transition-all rounded border",
                             deliveryMethod === "courier"
-                                ? "bg-white text-black"
-                                : "text-[#a1a1aa] hover:text-white"
+                                ? "bg-white text-black border-white"
+                                : "bg-transparent text-zinc-400 border-white/10 hover:border-white/30"
                         )}
                     >
-                        <Truck className="w-4 h-4" />
+                        <Truck className="w-3.5 h-3.5" />
                         Kurier
                     </button>
                     <button
                         onClick={() => setDeliveryMethod("inpost")}
                         className={clsx(
-                            "flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold uppercase transition-all rounded",
+                            "flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase transition-all rounded border",
                             deliveryMethod === "inpost"
-                                ? "bg-[#ffc000] text-black"
-                                : "text-[#a1a1aa] hover:text-white"
+                                ? "bg-[#ffc000] text-black border-[#ffc000]"
+                                : "bg-transparent text-zinc-400 border-white/10 hover:border-white/30"
                         )}
                     >
-                        <Box className="w-4 h-4" />
+                        <Box className="w-3.5 h-3.5" />
                         Paczkomat
                     </button>
                 </div>

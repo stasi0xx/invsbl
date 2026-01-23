@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { clsx } from "clsx";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import {Lens} from "@/components/ui/lens";
 
 interface ProductGalleryProps {
     images: string[];
@@ -14,7 +15,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     // --- STATE ---
     const [activeMobileImage, setActiveMobileImage] = useState(0); // Dla karuzeli mobile
     const [isModalOpen, setIsModalOpen] = useState(false);         // Czy lightbox jest otwarty
-    const [modalImageIndex, setModalImageIndex] = useState(0);     // Aktualne zdjęcie w lightboxie
+    const [modalImageIndex, setModalImageIndex] = useState(0);
+    const [hovering, setHovering] = useState(false);// Aktualne zdjęcie w lightboxie
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
