@@ -1,158 +1,82 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image"; // <--- 1. Importujemy Image
-import { Menu, ShoppingBag, X, Search } from "lucide-react";
-import { clsx } from "clsx";
-import { useCart } from "@/context/CartContext";
+import { Instagram, Facebook } from "lucide-react"; // Upewnij się, że masz te ikony, lub usuń import jeśli nie używasz
 
-export function Header() {
-    const [isVisible, setIsVisible] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { openCart, cartCount } = useCart();
-
-    // Logika "Smart Header"
-    useEffect(() => {
-        const controlNavbar = () => {
-            if (typeof window !== "undefined") {
-                const currentScrollY = window.scrollY;
-
-                if (currentScrollY > lastScrollY && currentScrollY > 50) {
-                    setIsVisible(false);
-                } else {
-                    setIsVisible(true);
-                }
-                setLastScrollY(currentScrollY);
-            }
-        };
-
-        window.addEventListener("scroll", controlNavbar);
-        return () => window.removeEventListener("scroll", controlNavbar);
-    }, [lastScrollY]);
-
-    // Blokada scrollowania gdy menu otwarte
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "unset";
-        }
-    }, [isMobileMenuOpen]);
-
+export function Footer() {
     return (
-        <>
-            {/* HEADER WRAPPER */}
-            <header
-                className={clsx(
-                    "fixed top-0 left-0 w-full z-[80] transition-transform duration-300 ease-in-out",
-                    isVisible ? "translate-y-0" : "-translate-y-full"
-                )}
-            >
-                {/* TOP BAR */}
-                <div className="w-full bg-[#d9f99d] text-[#1a2e05] text-[10px] md:text-xs font-bold text-center py-2 uppercase tracking-widest relative z-[81]">
-                    Darmowa wysyłka od 300 PLN • Wysyłka w 24h
-                </div>
+        <footer className="bg-black border-t border-white/10 pt-20 pb-10 px-4 md:px-8 mt-auto">
+            <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
 
-                {/* GŁÓWNY PASEK */}
-                <div className="bg-transparent w-full px-4 md:px-8 h-16 md:h-20 flex items-center justify-between relative z-[81]">
-
-                    {/* LEWA: Burger */}
-                    <div className="flex items-center gap-4 w-1/3">
-                        <button
-                            onClick={() => setIsMobileMenuOpen(true)}
-                            className="p-3 -ml-3 hover:bg-white/5 rounded-full transition-colors active:scale-95 touch-manipulation"
-                            aria-label="Otwórz menu"
-                        >
-                            <Menu className="w-6 h-6 text-[#f4f4f5]" />
-                        </button>
-
-                        <button className="hidden md:block p-2 hover:bg-white/5 rounded-full transition-colors text-[#a1a1aa] hover:text-[#f4f4f5]">
-                            <Search className="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    {/* ŚRODEK: LOGO (ZMIANA TUTAJ) */}
-                    <div className="w-1/3 flex justify-center pointer-events-none">
-                        <Link
-                            href="/"
-                            className="pointer-events-auto hover:opacity-80 transition-opacity"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            {/* Używamy Next Image dla optymalizacji */}
-                            {/* width/height ustawiamy proporcjonalnie do oryginału, ale klasy CSS kontrolują wyświetlanie */}
-                            <Image
-                                src="/logo.png"
-                                alt="INVSBL Logo"
-                                width={150} // Orientacyjna szerokość oryginału
-                                height={40} // Orientacyjna wysokość
-                                className="h-6 md:h-8 w-auto object-contain" // h-6 (mobile) / h-8 (desktop) - logo dopasuje się automatycznie
-                                priority // Logo ładujemy priorytetowo
-                            />
-                        </Link>
-                    </div>
-
-                    {/* PRAWA: Koszyk */}
-                    <div className="flex items-center justify-end gap-4 w-1/3">
-                        <button
-                            onClick={openCart}
-                            className="relative group p-3 -mr-3 hover:bg-white/5 rounded-full transition-colors active:scale-95 touch-manipulation"
-                            aria-label="Otwórz koszyk"
-                        >
-                            <ShoppingBag className="w-6 h-6 text-[#f4f4f5] group-hover:text-[#d9f99d] transition-colors" />
-
-                            {cartCount > 0 && (
-                                <span className="absolute top-1 right-1 bg-[#d9f99d] text-[#1a2e05] text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full animate-bounce-short">
-                    {cartCount}
-                  </span>
-                            )}
-                        </button>
+                {/* 1. BRAND */}
+                <div className="space-y-4">
+                    <h3 className="text-2xl font-display font-black text-white tracking-tighter uppercase">
+                        INVSBL
+                    </h3>
+                    <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
+                        Heavyweight streetwear designed in Poland.
+                        Est. 2026. Quality over quantity.
+                    </p>
+                    <div className="flex gap-4">
+                        {/* Social Media Linki (przykładowe) */}
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors">
+                            <Instagram className="w-5 h-5" />
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors">
+                            <Facebook className="w-5 h-5" />
+                        </a>
                     </div>
                 </div>
-            </header>
 
-            {/* MENU MOBILNE (OVERLAY) */}
-            <div
-                className={clsx(
-                    "fixed inset-0 z-[90] bg-[#09090b] transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]",
-                    isMobileMenuOpen
-                        ? "translate-y-0 opacity-100 pointer-events-auto"
-                        : "-translate-y-full opacity-0 pointer-events-none"
-                )}
-            >
-                <div className="flex items-center justify-between p-4 md:p-8 border-b border-white/10">
-                    <span className="text-[#a1a1aa] text-sm tracking-widest uppercase">Menu</span>
-                    <button
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="p-3 -mr-3 hover:bg-white/5 rounded-full text-[#f4f4f5]"
-                    >
-                        <X className="w-8 h-8" />
-                    </button>
+                {/* 2. SKLEP */}
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white uppercase tracking-wider text-sm">Sklep</h4>
+                    <ul className="space-y-2 text-sm text-zinc-500">
+                        <li><Link href="/" className="hover:text-acid transition-colors">Wszystkie produkty</Link></li>
+                        <li><Link href="/product/invisible-script-hoodie" className="hover:text-acid transition-colors">Hoodies</Link></li>
+                        <li><Link href="/product/invisible-script-sweatpants" className="hover:text-acid transition-colors">Pants</Link></li>
+                    </ul>
                 </div>
 
-                <nav className="flex flex-col items-center justify-center h-[calc(100vh-100px)] space-y-6 p-8 w-full">
-                    {[
-                        { name: "Strona Główna", href: "/" },
-                        { name: "Sklep", href: "/#products" },
-                        { name: "Kontakt", href: "/kontakt" },
-                    ].map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-3xl md:text-4xl font-display font-bold text-[#f4f4f5] hover:text-[#d9f99d] transition-colors text-center w-full"
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
+                {/* 3. POMOC & INFO (Zaktualizowane linki prawne) */}
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white uppercase tracking-wider text-sm">Info</h4>
+                    <ul className="space-y-2 text-sm text-zinc-500">
+                        <li><Link href="/dostawa" className="hover:text-acid transition-colors">Dostawa i Płatność</Link></li>
+                        <li><Link href="/zwroty" className="hover:text-acid transition-colors">Zwroty i Reklamacje</Link></li>
+                        <li><Link href="/regulamin" className="hover:text-acid transition-colors">Regulamin</Link></li>
+                        <li><Link href="/polityka-prywatnosci" className="hover:text-acid transition-colors">Polityka Prywatności</Link></li>
+                        <li><Link href="/kontakt" className="hover:text-acid transition-colors">Kontakt</Link></li>
+                    </ul>
+                </div>
 
-                    <div className="mt-8 pt-8 border-t border-white/10 w-full max-w-xs flex justify-center gap-6">
-                        <Link href="/regulamin" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Regulamin</Link>
-                        <Link href="/polityka-prywatnosci" className="text-[#a1a1aa] text-xs uppercase hover:text-white transition-colors">Prywatność</Link>
+                {/* 4. DANE FIRMOWE (Twoje dane) */}
+                <div className="space-y-4">
+                    <h4 className="font-bold text-white uppercase tracking-wider text-sm">Dane Firmowe</h4>
+                    <div className="space-y-1 text-sm text-zinc-500 font-light">
+                        <p className="text-white font-medium mb-2">WeUnite Jan Hofman</p>
+                        <p>ul. Gdyńska G lok. 9</p>
+                        <p>80-340 Gdańsk</p>
+
+                        <div className="pt-4 mt-4 border-t border-white/10 space-y-1">
+                            <p className="flex justify-between max-w-[200px]">
+                                <span>NIP:</span>
+                                <span className="font-mono text-zinc-400">5842877195</span>
+                            </p>
+                            <p className="flex justify-between max-w-[200px]">
+                                <span>REGON:</span>
+                                <span className="font-mono text-zinc-400">543312986</span>
+                            </p>
+                        </div>
                     </div>
-                </nav>
+                </div>
             </div>
-        </>
+
+            {/* COPYRIGHT */}
+            <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-600 uppercase tracking-widest">
+                <p>&copy; {new Date().getFullYear()} INVSBL WORLDWIDE. All rights reserved. DESIGNED BY STANISŁAW KORYCKI</p>
+                <div className="flex gap-4">
+                    <span className="flex items-center gap-1"><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> SYSTEMS OPERATIONAL</span>
+                </div>
+            </div>
+        </footer>
     );
 }
