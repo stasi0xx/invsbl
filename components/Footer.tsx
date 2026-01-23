@@ -32,11 +32,11 @@ export function Footer() {
                     <div>
                         <h3 className="text-white font-bold uppercase tracking-widest mb-6 text-sm">Informacje</h3>
                         <ul className="space-y-3 text-sm">
-                            <li><FooterLink href="/terms">Regulamin Sklepu</FooterLink></li>
-                            <li><FooterLink href="/privacy">Polityka Prywatności</FooterLink></li>
-                            <li><FooterLink href="/returns">Zwroty i Reklamacje</FooterLink></li>
-                            <li><FooterLink href="/shipping">Czas i koszt dostawy</FooterLink></li>
-                            <li><FooterLink href="/contact">Kontakt</FooterLink></li>
+                            <li><FooterLink href="/regulamin">Regulamin Sklepu</FooterLink></li>
+                            <li><FooterLink href="/polityka-prywatnosci">Polityka Prywatności</FooterLink></li>
+                            <li><FooterLink href="/zwroty">Zwroty i Reklamacje</FooterLink></li>
+                            <li><FooterLink href="/dostawa">Czas i koszt dostawy</FooterLink></li>
+                            <li><FooterLink href="/kontakt">Kontakt</FooterLink></li>
                         </ul>
                     </div>
 
