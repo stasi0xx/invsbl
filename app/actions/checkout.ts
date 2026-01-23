@@ -81,8 +81,13 @@ export async function createCheckoutSession(formData: FormData) {
 
         console.log("Tworzenie sesji Stripe (Automatic Methods)...");
 
-        const session = await stripe.checkout.sessions.create({
 
+        const session = await stripe.checkout.sessions.create({
+            // --- ZMIANA ARCHITEKTONICZNA ---
+            // Zamiast ręcznie wymieniać ["card", "blik", "p24"],
+            // pozwalamy Dashboardowi decydować co jest dostępne.
+            // To zapobiega błędom "Invalid payment method type".
+            // @ts-ignore
             automatic_payment_methods: { enabled: true },
 
             line_items: lineItems,
