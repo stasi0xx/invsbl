@@ -22,7 +22,7 @@ export const PRODUCTS: Product[] = [
         id: "prod_hoodie",
         name: "INVISIBLE SCRIPT HEAVYWEIGHT HOODIE",
         slug: "invisible-script-hoodie",
-        price: 34900,
+        price: 300,
         currency: "pln",
         description: "Heavyweight Cotton Hoodie.Gramatura 480gsm.",
         features: [
