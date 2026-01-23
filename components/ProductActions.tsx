@@ -178,7 +178,7 @@ export function ProductActions({ product }: { product: Product }) {
                     </button>
 
                     <form action={createCheckoutSession} className="flex-1">
-                        <input type="hidden" name="productSlug" value={product.id} />
+                        <input type="hidden" name="productSlug" value={product.slug} />
                         <input type="hidden" name="productName" value={`${product.name} [${selectedSize || ''}]${isPreorder ? ' (PRE-ORDER)' : ''}`} />
                         <input type="hidden" name="priceAmount" value={product.price} />
                         <input type="hidden" name="priceCurrency" value={product.currency} />
