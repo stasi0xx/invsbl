@@ -13,7 +13,7 @@ export function Footer() {
                     </h3>
                     <p className="text-sm text-zinc-500 max-w-xs leading-relaxed">
                         Heavyweight streetwear designed in Poland.
-                        Est. 2026. Quality over quantity.
+                        Est. 202. Quality over quantity.
                     </p>
                     <div className="flex gap-4">
                         {/* Social Media Linki (przykładowe) */}
@@ -72,7 +72,7 @@ export function Footer() {
 
             {/* COPYRIGHT */}
             <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-600 uppercase tracking-widest">
-                <p>&copy; {new Date().getFullYear()} INVSBL WORLDWIDE. All rights reserved. DESIGNED BY STANISŁAW KORYCKI</p>
+                <p>&copy; {new Date().getFullYear()} INVSBL WORLDWIDE. All rights reserved.</p>
                 <div className="flex gap-4">
                     <span className="flex items-center gap-1"><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> SYSTEMS OPERATIONAL</span>
                 </div>
