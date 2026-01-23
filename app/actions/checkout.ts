@@ -5,44 +5,33 @@ import { redirect } from "next/navigation";
 import { getProductBySlug } from "@/lib/product";
 
 export async function createCheckoutSession(formData: FormData) {
-    // 1. Ustalanie URL (Musi być HTTPS na produkcji)
-    // Jeśli nie ustawiłeś zmiennej w Vercel, zadziała localhost, ale zdjęcia w Stripe mogą się nie wyświetlić (błąd 500 jednak zniknie).
     const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
     const isMultiItem = formData.get("isMultiItem") === "true";
     const deliveryMethod = (formData.get("deliveryMethod") as string) || "courier";
     const paczkomatCode = (formData.get("paczkomatCode") as string) || "";
 
     let lineItems = [];
     let metadata: Record<string, string | number> = {};
+    let sessionUrl = "";
 
     try {
         if (isMultiItem) {
-            // --- A. LOGIKA KOSZYKA ---
+            // --- KOSZYK ---
             const cartDataString = formData.get("cartData") as string;
             if (!cartDataString) throw new Error("Koszyk jest pusty");
 
             const cartItemsRaw = JSON.parse(cartDataString);
 
-            const validatedItems = cartItemsRaw.map((item: any) => {
+            lineItems = cartItemsRaw.map((item: any) => {
                 const realProduct = getProductBySlug(item.productSlug);
-
-                if (!realProduct) {
-                    throw new Error(`Produkt ${item.productSlug} nie istnieje.`);
-                }
-
-                // --- FIX: TWORZENIE ABSOLUTNEGO URL DO ZDJĘCIA ---
-                // Stripe wywali błąd 500, jeśli wyślesz mu "/bluza.webp". Musi być "https://.../bluza.webp"
-                const imageUrl = realProduct.image.startsWith("http")
-                    ? realProduct.image
-                    : `${origin}${realProduct.image}`;
+                if (!realProduct) throw new Error(`Produkt ${item.productSlug} nie istnieje.`);
 
                 return {
                     price_data: {
                         currency: realProduct.currency,
                         product_data: {
                             name: item.name,
-                            images: [imageUrl], // <--- Teraz wysyłamy poprawny link
+                            // images: [] <--- WYŁĄCZONE DLA BEZPIECZEŃSTWA (Image URL Error Prevention)
                         },
                         unit_amount: realProduct.price,
                     },
@@ -51,42 +40,30 @@ export async function createCheckoutSession(formData: FormData) {
                 };
             });
 
-            lineItems = validatedItems;
-
             metadata = {
                 type: "cart_checkout",
-                items_count: validatedItems.length,
-                product_slugs: validatedItems.map((i: any) => i.slug).join(","),
+                items_count: lineItems.length,
                 delivery_method: deliveryMethod,
                 paczkomat_code: paczkomatCode,
             };
 
         } else {
-            // --- B. LOGIKA POJEDYNCZA (KUP TERAZ) ---
+            // --- POJEDYNCZY PRODUKT ---
             const productSlug = formData.get("productSlug") as string;
             const size = formData.get("size") as string;
-
             const product = getProductBySlug(productSlug);
 
-            if (!product) {
-                console.error("Critical Error: Produkt nieznany", productSlug);
-                throw new Error("Produkt nie istnieje");
-            }
+            if (!product) throw new Error("Produkt nie istnieje");
 
             const isPreorder = !!product.preorderDate;
             const finalName = `${product.name} [${size}]${isPreorder ? ' (PRE-ORDER)' : ''}`;
-
-            // --- FIX: TWORZENIE ABSOLUTNEGO URL DO ZDJĘCIA ---
-            const imageUrl = product.image.startsWith("http")
-                ? product.image
-                : `${origin}${product.image}`;
 
             lineItems = [{
                 price_data: {
                     currency: product.currency,
                     product_data: {
                         name: finalName,
-                        images: [imageUrl], // <--- Teraz wysyłamy poprawny link
+                        // images: [] <--- WYŁĄCZONE DLA BEZPIECZEŃSTWA
                     },
                     unit_amount: product.price,
                 },
@@ -102,9 +79,12 @@ export async function createCheckoutSession(formData: FormData) {
             };
         }
 
-        // --- TWORZENIE SESJI STRIPE ---
+        console.log("Tworzenie sesji Stripe (Automatic Methods)...");
+
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card", "blik", "p24"],
+
+            automatic_payment_methods: { enabled: true },
+
             line_items: lineItems,
             mode: "payment",
             success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -116,11 +96,15 @@ export async function createCheckoutSession(formData: FormData) {
         });
 
         if (session.url) {
-            redirect(session.url);
+            sessionUrl = session.url;
         }
 
     } catch (error) {
-        console.error("STRIPE CHECKOUT ERROR:", error);
+        console.error("KRYTYCZNY BŁĄD STRIPE:", error);
         throw error;
+    }
+
+    if (sessionUrl) {
+        redirect(sessionUrl);
     }
 }
