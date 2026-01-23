@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { clsx } from "clsx";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
-import {Lens} from "@/components/ui/lens";
+
 
 interface ProductGalleryProps {
     images: string[];
